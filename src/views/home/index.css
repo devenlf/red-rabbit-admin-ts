@@ -1,0 +1,27 @@
+.all-box {
+    height: 100%;
+}
+.layout-box{
+    height: 100%;
+}
+
+.ant-layout-header{
+ background: #efefef;
+ padding: 0px;
+}
+.ant-layout-sider{
+ background: #efefef
+}
+.head-box{
+ width: 100%;
+}
+.head-box img{
+ margin-left: 10px;
+ height: 50px;
+}
+.user-info{
+ display: flex;
+ flex-direction: row-reverse;
+ flex: 1;
+ padding-right: 20px;
+}
