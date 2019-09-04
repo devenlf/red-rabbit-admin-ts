@@ -16,8 +16,11 @@
     "react-scripts-ts": "3.1.0"
   },
   "scripts": {
-    "start": "react-scripts-ts start",
-    "build": "react-scripts-ts build",
+    "start": "REACT_APP_CODE_ENV=local react-scripts-ts start",
+    "build": "REACT_APP_CODE_ENV=local react-scripts-ts build",
+    "build:qa": "REACT_APP_CODE_ENV=qa react-scripts-ts build",
+    "build:pre": "REACT_APP_CODE_ENV=pre react-scripts-ts build",
+    "build:prd": "REACT_APP_CODE_ENV=prd react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
     "eject": "react-scripts-ts eject"
   },

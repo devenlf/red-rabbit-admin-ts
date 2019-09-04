@@ -1,7 +1,5 @@
-import axios from 'axios';
+import http from './server'
 
-let url:string='';
-
-axios.create({
-    baseURL:url
-})
+export default {
+    getUserInfo:() => http.getFunc("/user/index"),
+}

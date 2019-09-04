@@ -2,13 +2,14 @@ import * as React from 'react';
 import { renderRoutes } from "react-router-config";
 import { Layout, Row, Col } from 'antd';
 import "./index.css";
+import api from "../../api/api"
 import SiderBox from '../../component/sider'
 const { Header,Footer, Sider, Content } = Layout;
 
 
 class Home extends React.Component<any,any>{
     componentDidMount() {
-        console.dir(this.props);
+        api.getUserInfo()
       }
     render(){
         return(
