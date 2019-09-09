@@ -1,5 +1,4 @@
 import http from './server'
-
 export default {
-    getUserInfo:() => http.getFunc("/user/index"),
+    getUserInfo:():Promise<any> => http.getFunc("/user/index"),
 }

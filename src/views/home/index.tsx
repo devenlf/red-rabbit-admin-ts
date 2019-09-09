@@ -5,11 +5,32 @@ import "./index.css";
 import api from "../../api/api"
 import SiderBox from '../../component/sider'
 const { Header,Footer, Sider, Content } = Layout;
+interface homeState {
+    userInfo:{
+        name:string,
+        userId:number|string
+    }
+}
 
-
-class Home extends React.Component<any,any>{
-    componentDidMount() {
-        api.getUserInfo()
+class Home extends React.Component<any,homeState>{
+    constructor(props:any){
+        super(props);
+        this.state={
+            userInfo:{
+                name:'',
+                userId:''
+            }
+        }
+    }
+    async componentDidMount() {
+        let {code,data} = await api.getUserInfo().then((config)=>{
+            return config.data
+        })
+        if(code==200){
+            this.setState({
+                userInfo:{name:data.username,userId:data.id}
+            })
+        }
       }
     render(){
         return(
@@ -21,8 +42,8 @@ class Home extends React.Component<any,any>{
                         <img src="assets/imgs/common/ic_logo_onlinebusiness@2x.png"></img>
                         </Col>
                         <Col span={12} className="user-info">
-                        <div>账户名:{ }</div>
-                        <div>用户ID:{ }</div>
+                        <div>账户名:{this.state.userInfo.name}</div>
+                        <div>用户ID:{this.state.userInfo.userId}</div>
                         </Col>
                     </Row>
                 </Header>
