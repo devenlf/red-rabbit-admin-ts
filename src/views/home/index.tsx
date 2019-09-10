@@ -2,6 +2,7 @@ import * as React from 'react';
 import { renderRoutes } from "react-router-config";
 import { Layout, Row, Col } from 'antd';
 import "./index.css";
+import "../../common-css/box.css"
 import api from "../../api/api"
 import SiderBox from '../../component/sider'
 const { Header,Footer, Sider, Content } = Layout;
@@ -23,9 +24,7 @@ class Home extends React.Component<any,homeState>{
         }
     }
     async componentDidMount() {
-        let {code,data} = await api.getUserInfo().then((config)=>{
-            return config.data
-        })
+        let {code,data} = await api.getUserInfo()
         if(code==200){
             this.setState({
                 userInfo:{name:data.username,userId:data.id}
@@ -39,7 +38,7 @@ class Home extends React.Component<any,homeState>{
                 <Header className="head-position">
                     <Row className="head-box" type="flex" justify="space-around" align="middle">
                         <Col span={12}>
-                        <img src="assets/imgs/common/ic_logo_onlinebusiness@2x.png"></img>
+                        <img src="assets/imgs/common/ic_logo text_onlinebusiness@3x.png"></img>
                         </Col>
                         <Col span={12} className="user-info">
                         <div>账户名:{this.state.userInfo.name}</div>
@@ -53,7 +52,7 @@ class Home extends React.Component<any,homeState>{
                     </Sider>
                     <Layout>
                     <Content>
-                      {renderRoutes(this.props.route.routes)}
+                        {renderRoutes(this.props.route.routes)}
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
                     </Layout>

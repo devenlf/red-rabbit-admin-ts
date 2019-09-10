@@ -49,12 +49,17 @@ class http{
     postFunc(url:string,params:any = {}){
         return this.axiosObj.post(url,{
             ...params
+        }).then((config:any)=>{
+          return config.data
         })
     }
 
     getFunc(url:string,params:any = {}){
+        console.log(params)
         return this.axiosObj.get(url,{
-            ...params
+            params
+        }).then((config:any)=>{
+          return config.data
         })
     }
 }

@@ -19,7 +19,7 @@ export default class SiderBox extends React.Component<any,any>{
   }
   render() {
     return (
-      <Menu mode="inline" key="menu">
+      <Menu mode="inline" theme="dark" key="menu">
         {this.state.MenuList[0].routes.map((item:MenuList)=>{
             if(item.routes){
                 return <SubMenu title={item.name} key={item.key}>
