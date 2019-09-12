@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Row, Col, Select, Input, Table, Button, Popover, Modal, Pagination } from 'antd';
+import { Row, Col, Select, Input, Table, Button, Popover, Modal, Pagination, Form, Radio } from 'antd';
 import { ColumnProps } from 'antd/es/table';
+import Refuse from '../../component/site/refuse'
 import Site from "../../api/siteList"
 import "./reviewSite.css"
 const { Option } = Select;
@@ -14,6 +15,10 @@ interface siteListState{
   pageSize:number,
   dataSource:any[],
   pageTotal:number,
+  switchStatus:number,
+  refuseVisible:boolean,
+  refuseReasonTetxt:string,
+  currentSiteId:number,
 }
 interface userSite{
   key:number|string,
@@ -70,7 +75,16 @@ const colorSelect = function(status:string):string{
          return 'rgb(0, 0, 0)'
     }
  }  
-
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  }
+}
 
 class siteList extends React.Component<any,siteListState>{
     private columns:ColumnProps<userSite>[] =[
@@ -107,7 +121,7 @@ class siteList extends React.Component<any,siteListState>{
                     <Button type="primary" size="default" onClick={()=>this.expressFunction([id],0)} style={{marginRight:10}} >
                       通过
                     </Button> 
-                    <Button type="danger" size="default">
+                    <Button type="danger" size="default" onClick={()=>this.setState({refuseVisible:!this.state.refuseVisible,currentSiteId:id})}>
                       拒绝
                     </Button> 
               </div> 
@@ -119,12 +133,18 @@ class siteList extends React.Component<any,siteListState>{
         this.state = {
             ...props,
             dataSource:[],
-            searchType:'',
+            searchType:'site.id',
             searchValue:'',
-            statusValue:'',
+            statusValue:'100',
             currentPage:1,
             pageSize:20,
             pageTotal:0,
+            switchStatus:1,
+            refuseVisible:false,
+            refuseReasonTetxt:'',
+            refuseTypeText:'',
+            refuseTypeRefuse:'',
+            currentSiteId:'',
         }
     }
 
@@ -142,7 +162,7 @@ class siteList extends React.Component<any,siteListState>{
                    <Row type="flex" justify="end" align="middle">
                        <Col span={4} className="group-select">
                                <label>状态:</label>
-                               <Select style={{ width: 120 }} defaultValue="100" onChange={this.handleChange}>
+                               <Select style={{ width: 120 }} defaultValue="100" onChange={this.handleChangeStatus}>
                                    {siteStatusOptions.map((item,index:number)=>{
                                        return <Option key={index} value={item.value}>{item.label}</Option>
                                    })}
@@ -151,12 +171,12 @@ class siteList extends React.Component<any,siteListState>{
                        <Col className="group-select" span={5} style={{minWidth: 340}}>
                                <label style={{width:50}}>类别:</label>
                                <InputGroup compact style={{width: 280}}>
-                               <Select style={{ width: 100 }} defaultValue="site.id" onChange={this.handleChange}>
+                               <Select style={{ width: 100 }} defaultValue="site.id" onChange={this.handleChangeType}>
                                    {siteSearchTypeOptions.map((item,index:number)=>{
                                        return <Option key={index} value={item.value}>{item.label}</Option>
                                    })}
                                 </Select>
-                               <Search style={{width:180}} placeholder="请输入关键字" onSearch={value => console.log(value)} enterButton />
+                               <Search style={{width:180}} placeholder="请输入关键字" onSearch={ this.searchText} enterButton />
                                </InputGroup>
                        </Col>
                    </Row>
@@ -172,18 +192,56 @@ class siteList extends React.Component<any,siteListState>{
                     total={this.state.pageTotal}
                   />
                    </Row>
+                   <Modal
+                    title="审核拒绝"
+                    visible={this.state.refuseVisible}
+                    onOk={()=>this.refuseFunction([this.state.currentSiteId],2,this.state.refuseReasonTetxt)}
+                    onCancel={()=>this.setState({refuseVisible:!this.state.refuseVisible})}
+                  >
+                  <div>
+                    <Form {...formItemLayout}>
+                    <Form.Item label="原因类型">
+                    <Radio.Group onChange={this.refuseReasonSwitch} value={this.state.switchStatus}>
+                    <Radio value={1}>标准</Radio>
+                    <Radio value={2}>自定义</Radio>
+                    </Radio.Group>
+                    </Form.Item>
+                    <Form.Item label="拒绝理由">
+                      <Refuse getRefuseReason={this.getRefuseReason} status={this.state.switchStatus}></Refuse>
+                    </Form.Item>
+                    </Form>
+                  </div>
+                  </Modal>
                 </div>
             </div>
         )
     }
 
-    handleChange(val:string){
-        console.log(val)
+    private handleChangeStatus= async (val:string)=> {
+        await this.setState({
+          statusValue:val
+        })
+        await this.getSiteListData(1)
+    }
+
+    private handleChangeType= (val:string)=> {
+      this.setState({
+        searchType:val
+      })
+    }
+
+    //搜索
+    private searchText= (val:string) =>{
+      this.setState({
+        searchValue:val
+      },()=>{
+        this.getSiteListData(1)
+      })
     }
 
     async getSiteListData(upload:number=0){
         let param = {
-            page: !upload?this.state.currentPage:0,
+            page: !upload?this.state.currentPage:1,
             size: !upload?this.state.pageSize:20,
             searchType: this.state.searchType,
             searchValue: this.state.searchValue,
@@ -200,7 +258,7 @@ class siteList extends React.Component<any,siteListState>{
 
     //分页
     private async onShowSizeChange(current:number, pageSize:number) {
-      this.setState({
+      await this.setState({
         currentPage:1,
         pageSize:pageSize,
       })
@@ -210,7 +268,7 @@ class siteList extends React.Component<any,siteListState>{
     //改变当前页数
     private async onShowChange(page:number,pageSize:number){
       console.log(page,pageSize)
-      this.setState({
+      await this.setState({
         currentPage:page,
         pageSize:pageSize,
       })
@@ -234,6 +292,17 @@ class siteList extends React.Component<any,siteListState>{
       });
     }
 
+    //拒绝
+    private async refuseFunction (siteID:number[],status:number,refuseReason:string){
+      let {code} = await Site.siteUpdate({siteId:siteID,status,refuseReason})
+            if(code==200){
+              this.getSiteListData(1)
+              this.setState({
+                refuseVisible:false
+              })
+            }
+    }
+
     //视图浏览
     private preview({siteUrlPrefix,siteUrlSuffix,staticUrlSuffix,staticUrlPrefix}:any){
       if (staticUrlSuffix) {
@@ -241,6 +310,20 @@ class siteList extends React.Component<any,siteListState>{
       } else {
         window.open(`${siteUrlPrefix}${siteUrlSuffix}`, "_blank");
       }
+    }
+
+    //拒绝理由切换
+    private refuseReasonSwitch =(e:any)=>{
+      this.setState({
+        switchStatus:e.target.value
+      })
+    }
+
+    //获取拒绝理由
+    private getRefuseReason =(refuseReason:string)=>{
+      this.setState({
+        refuseReasonTetxt:refuseReason
+      })
     }
 }
 

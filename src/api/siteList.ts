@@ -10,6 +10,7 @@ export default {
 
     siteUpdate:(params:{
         siteId:number[],
-        status:number
+        status:number,
+        refuseReason?:string,
     }):Promise<any> => http.postFunc("/site/update", params),
 }
