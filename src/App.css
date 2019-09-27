@@ -26,3 +26,12 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.label-title{
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.label-title .ant-col{
+  min-width: 140px
+}
