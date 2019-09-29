@@ -1,4 +1,4 @@
-import { Upload } from 'antd';
+// import { Upload } from 'antd';
 import * as React from 'react';
 
 interface upload{

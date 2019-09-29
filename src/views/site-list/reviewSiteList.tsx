@@ -89,7 +89,7 @@ const formItemLayout = {
 class siteList extends React.Component<any,siteListState>{
     private columns:ColumnProps<userSite>[] =[
     {title:'站点ID',dataIndex:'id',key:'id'},
-    {title:'站点名称',key:'name',width:300,className:'overflow-box',render:({name})=>{
+    {title:'站点名称',key:'name',width:300,render:({name})=>{
       return <Popover content={name} title="站点名称">
               <span>{name}</span>
             </Popover>
@@ -101,7 +101,7 @@ class siteList extends React.Component<any,siteListState>{
               })[0]['label']}
              </span>
     }},
-    {title:'拒绝理由',width:300,key:'refuseReason',className:'overflow-box',render:({refuseReason})=>{
+    {title:'拒绝理由',width:300,key:'refuseReason',render:({refuseReason})=>{
       return <Popover content={refuseReason} title="拒绝理由">
               <span>{refuseReason}</span>
             </Popover>
